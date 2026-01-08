@@ -4,6 +4,8 @@
 - [Lê Phú Hào](https://github.com/tdtu-lph1110): Frontend người dùng
 - Lê Ngọc Bích Vy: Frontend quản trị viên
 
+[View full commit history](https://github.com/TDeV-VN/tdtu-nodejs-ecommerce)
+
 ---
 
 ## BẮT ĐẦU VỚI
