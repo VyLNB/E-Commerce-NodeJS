@@ -1,0 +1,60 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api.dev
+    env_file:
+      - docker-compose.dev.env
+    volumes:
+      - ./server:/usr/src/app # Chia sẻ mã nguồn từ máy host vào container
+      - ./server/publics:/usr/src/app/publics # Chia sẻ thư mục publics từ máy host vào container
+      - /usr/src/app/node_modules # Giữ nguyên thư mục node_modules trong container
+      - /usr/src/app/logs # Giữ nguyên thư mục logs trong container
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker.dev
+    env_file:
+      - docker-compose.dev.env
+    volumes:
+      - ./worker:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/logs
+
+  frontend-client-service:
+    env_file:
+      - docker-compose.dev.env
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+
+  frontend-dashboard-service:
+    env_file:
+      - docker-compose.dev.env
+    volumes:
+      - ./dashboard:/usr/src/app
+      - /usr/src/app/node_modules
+
+  mongo:
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data-dev:/data/db
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+  redis:
+    ports:
+      - "6379:6379"
+    env_file:
+      - docker-compose.dev.env
+    volumes:
+      - redis-data-dev:/data
+    # command: ["redis-server", "--logfile", "/dev/null"] # Commented out to see logs
+
+volumes:
+  mongo-data-dev:
+  redis-data-dev:
+
+networks:
+  gearup-network:
+    driver: bridge

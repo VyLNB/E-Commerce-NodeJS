@@ -1,0 +1,144 @@
+services:
+  api:
+    # container_name: api-service
+    image: api-service:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.api.prod
+    env_file:
+      - docker-compose.prod.env
+    depends_on:
+      - mongo
+      - redis
+    restart: always
+    volumes:
+      - api-publics:/usr/src/app/publics
+    networks:
+      - gearup-network
+    ports:
+      - "5000:3000" # phải khớp với giá trị APP_PUBLIC_PORT và APP_PORT trong docker-compose.env
+
+  worker:
+    image: worker-service:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.worker.prod
+    env_file:
+      - docker-compose.prod.env
+    depends_on:
+      - mongo
+      - redis
+    restart: always
+    networks:
+      - gearup-network
+
+  frontend-client-service:
+    # container_name: frontend-client-service
+    image: frontend-client-service:latest
+    build:
+      context: .
+      dockerfile: dockerfile.client
+    env_file:
+      - docker-compose.prod.env
+    depends_on:
+      - api
+      # - worker
+    restart: always
+    networks:
+      - gearup-network
+    ports:
+      - "3000:3000"
+
+  frontend-dashboard-service:
+    # container_name: frontend-dashboard-service
+    image: frontend-dashboard-service:latest
+    build:
+      context: .
+      dockerfile: dockerfile.dashboard
+    env_file:
+      - docker-compose.prod.env
+    depends_on:
+      - api
+      # - worker
+    restart: always
+    networks:
+      - gearup-network
+    ports:
+      - "4000:5173"
+
+  mongo:
+    # container_name: mongo
+    image: mongo:8.0.14
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+    networks:
+      - gearup-network
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+
+  redis:
+    # container_name: redis
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data/redis
+    restart: always
+    networks:
+      - gearup-network
+    env_file:
+      - docker-compose.prod.env
+    command: sh -c "if [ -n \"$${DEFAULT_REDIS_PASSWORD}\" ]; then redis-server --requirepass \"$${DEFAULT_REDIS_PASSWORD}\"; else redis-server; fi"
+
+  # Service khởi tạo Replica Set cho MongoDB
+  mongo-init:
+    image: mongo:8.0.14
+    restart: "no"
+    depends_on:
+      - mongo
+    networks:
+      - gearup-network
+    command: >
+      bash -c "
+      echo 'Waiting for MongoDB...';
+      until mongosh --host mongo:27017 --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 1)' &>/dev/null; do
+        sleep 1;
+      done;
+      echo 'MongoDB is up. Initializing Replica Set...';
+      mongosh --host mongo:27017 --eval \"
+        try {
+          rs.status();
+          print('Replica Set already initialized.');
+        } catch (e) {
+          if (e.code === 94 || e.codeName === 'NotYetInitialized' || e.message.includes('no replset config has been received')) {
+            try {
+              rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'mongo:27017'}]});
+              print('Replica Set initialized successfully.');
+            } catch (err) {
+              print('Failed to initiate Replica Set: ' + err);
+            }
+          } else {
+            print('Error checking RS status: ' + e);
+          }
+        }
+      \";
+      "
+
+  # Dịch vụ Dozzle để giám sát log của tất cả các container
+  dozzle:
+    # container_name: dozzle
+    image: amir20/dozzle:v8.14.3
+    volumes:
+      # Cấp quyền cho Dozzle truy cập vào Docker socket để nó có thể đọc log
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8888:8080"
+
+volumes:
+  mongo-data:
+  redis-data:
+  api-publics:
+
+networks:
+  gearup-network:
+    driver: bridge

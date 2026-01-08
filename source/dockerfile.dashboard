@@ -1,0 +1,11 @@
+FROM node:alpine3.21
+
+WORKDIR /usr/src/app
+
+COPY  dashboard/package*.json ./
+
+RUN npm install
+
+COPY dashboard ./
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

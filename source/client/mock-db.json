@@ -1,0 +1,71 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Tai nghe Bluetooth không dây",
+      "image": "/images/product-1.png",
+      "price": 49.99,
+      "oldPrice": 69.99,
+      "rating": 4.5,
+      "reviews": 120
+    },
+    {
+      "id": 2,
+      "name": "Bàn phím cơ RGB",
+      "image": "/images/product-2.png",
+      "price": 89.5,
+      "rating": 5,
+      "reviews": 75
+    },
+    {
+      "id": 3,
+      "name": "Chuột Gaming Logitech",
+      "image": "/images/product-3.png",
+      "price": 35.0,
+      "rating": 4.0,
+      "reviews": 210
+    },
+    {
+      "id": 4,
+      "name": "Loa thông minh Google Home Mini",
+      "image": "/images/product-4.png",
+      "price": 29.99,
+      "oldPrice": 39.99,
+      "rating": 4.8,
+      "reviews": 90
+    },
+    {
+      "id": 5,
+      "name": "Máy ảnh Sony Alpha A6000",
+      "image": "/images/product-5.png",
+      "price": 550.0,
+      "rating": 4.9,
+      "reviews": 50
+    },
+    {
+      "id": 6,
+      "name": "Điện thoại Samsung Galaxy S23",
+      "image": "/images/product-6.png",
+      "price": 899.0,
+      "rating": 4.7,
+      "reviews": 150
+    },
+    {
+      "id": 7,
+      "name": "Laptop Dell XPS 15",
+      "image": "/images/product-7.png",
+      "price": 1200.0,
+      "oldPrice": 1500.0,
+      "rating": 4.6,
+      "reviews": 65
+    },
+    {
+      "id": 8,
+      "name": "Đồng hồ thông minh Apple Watch SE",
+      "image": "/images/product-8.png",
+      "price": 250.0,
+      "rating": 4.3,
+      "reviews": 180
+    }
+  ]
+}
