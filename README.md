@@ -1,7 +1,7 @@
 ### Dự án Cuối kỳ môn Lập trình Web với NodeJS 
 Đây là Dự án nhóm với các thành viên
-- [Nguyễn Thành Tiến] (https://github.com/TDeV-VN): Backend
-- [Lê Phú Hào] (https://github.com/tdtu-lph1110): Frontend người dùng
+- [Nguyễn Thành Tiến](https://github.com/TDeV-VN): Backend
+- [Lê Phú Hào](https://github.com/tdtu-lph1110): Frontend người dùng
 - Lê Ngọc Bích Vy: Frontend quản trị viên
 
 ---
